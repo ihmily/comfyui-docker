@@ -17,6 +17,7 @@ RUN apt-get update && \
         git \
         ca-certificates \
         ninja-build \
+        vim \
     && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

@@ -46,13 +46,11 @@ REPOS=(
     "https://github.com/welltop-cn/ComfyUI-TeaCache"
     "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite"
     "https://github.com/ssitu/ComfyUI_UltimateSDUpscale"
-    "https://github.com/MrForExample/ComfyUI-3D-Pack"
     "https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved"
     "https://github.com/PowerHouseMan/ComfyUI-AdvancedLivePortrait"
     "https://github.com/Lightricks/ComfyUI-LTXVideo"
     "https://github.com/TTPlanetPig/Comfyui_TTP_Toolset"
     "https://github.com/nunchaku-tech/ComfyUI-nunchaku"
-    "https://github.com/AIDC-AI/ComfyUI-Copilot"
 )
 
 cd /app/ComfyUI/custom_nodes || exit 1
