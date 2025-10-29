@@ -1,0 +1,113 @@
+name: Build and Push Docker Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker image tag (leave empty for latest)'
+        required: false
+        default: 'latest'
+      push_to_registry:
+        description: 'Push to Docker Hub registry'
+        type: boolean
+        default: true
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: ihmily/comfyui-full
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Docker Hub
+      if: ${{ inputs.push_to_registry == true }}
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=raw,value=${{ inputs.tag }}
+          type=raw,value=gpu-cu124
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        platforms: linux/amd64
+        push: ${{ inputs.push_to_registry == true }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        build-args: |
+          BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+          VCS_REF=${{ github.sha }}
+          VERSION=${{ inputs.tag }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ inputs.push_to_registry == false }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Build image for testing
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        platforms: linux/amd64
+        push: false
+        tags: comfyui-test:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Test image
+      run: |
+        docker run --rm comfyui-test:latest python --version
+        docker run --rm comfyui-test:latest pip list | grep torch
+        echo "Image test completed successfully"
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ inputs.push_to_registry == true }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.tag }}
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'

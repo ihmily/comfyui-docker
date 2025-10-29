@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  comfyui:
+    image: ihmily/comfyui-full:gpu-cu124
+    container_name: comfyui
+    ports:
+      - "8188:8188"
+    environment:
+      - CUDA_DEVICE=0
+      - EXTRA_ARGS=--disable-metadata --disable-smart-memory
+    volumes:
+      # Mount your local directories to container
+      - ./models:/app/ComfyUI/models
+      - ./custom_nodes:/app/ComfyUI/custom_nodes
+      - ./output:/app/ComfyUI/output
+      - ./input:/app/ComfyUI/input
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
