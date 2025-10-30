@@ -40,9 +40,6 @@ RUN chmod +x /app/install_custom_nodes.sh && \
 
 RUN pip install --no-cache-dir -r /app/ComfyUI/requirements.txt
 
-RUN rm -rf /root/.cache && \
-    find /app/ComfyUI/custom_nodes -name ".git" -type d -exec rm -rf {} + 2>/dev/null || true
-
 EXPOSE 8188
 
 ENV EXTRA_ARGS=""
