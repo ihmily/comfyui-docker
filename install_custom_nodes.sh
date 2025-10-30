@@ -78,4 +78,33 @@ while IFS= read -r req_file; do
     fi
 done < <(find . -maxdepth 3 -name "requirements.txt" -type f)
 
+echo "🔧 Installing custom global dependencies..."
+
+CUSTOM_DEPS=(
+    "ninja"
+    "llama-cpp-python"
+    "nunchaku"
+)
+
+for dep in "${CUSTOM_DEPS[@]}"; do
+    echo "📦 Installing custom dependency: $dep"
+    if pip install --no-cache-dir "$dep"; then
+        echo "✅ Successfully installed: $dep"
+    else
+        echo "❌ Failed to install: $dep"
+    fi
+done
+
+UPGRADE_DEPS=(
+    "accelerate"
+)
+
+for dep in "${UPGRADE_DEPS[@]}"; do
+    echo "🔄 Upgrading: $dep"
+    if pip install --no-cache-dir -U "$dep"; then
+        echo "✅ Successfully upgraded: $dep"
+    else
+        echo "❌ Failed to upgrade: $dep"
+    fi
+done
 echo "🎉 All custom nodes installation completed!"
