@@ -56,6 +56,8 @@ After pulling, you can directly use `ihmily/comfyui-full:gpu-cu124` as the image
 
 ## 🚀 Running the Container
 
+Note: All the following run commands use the image pulled from the remote repository. If you need to run your locally built image, change `ihmily/comfyui-full:gpu-cu124` to `comfyui-full:gpu-cu124`.
+
 ### Basic Run Command
 
 ```bash
@@ -64,7 +66,7 @@ docker run -d \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  comfyui-full:gpu-cu124
+  ihmily/comfyui-full:gpu-cu124
 ```
 
 ### Recommended Run Configuration
@@ -82,7 +84,7 @@ docker run -d \
   -v "$pwd/user:/app/ComfyUI/user" \
   -v "$pwd/output:/app/ComfyUI/output" \
   -v "$pwd/input:/app/ComfyUI/input" \
-  comfyui-full:gpu-cu124
+  ihmily/comfyui-full:gpu-cu124
 ```
 
 To more conveniently manage custom nodes, you can mount the custom_nodes directory. Note that if the local custom_nodes directory is empty after mounting, there will be no ComfyUI nodes in the container.
@@ -101,7 +103,7 @@ docker run -d \
   -v "$pwd/output:/app/ComfyUI/output" \
   -v "$pwd/input:/app/ComfyUI/input" \
   -v "$pwd/custom_nodes:/app/ComfyUI/custom_nodes" \
-  comfyui-full:gpu-cu124
+  ihmily/comfyui-full:gpu-cu124
 ```
 
 For users in China who have poor network access to HuggingFace, you can configure a HuggingFace mirror environment variable by adding the following parameter when running the container:
@@ -122,7 +124,7 @@ docker run -d \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  comfyui-full:gpu-cu124 \
+  ihmily/comfyui-full:gpu-cu124 \
   python ComfyUI/main.py --listen 0.0.0.0 --port 8188 --disable-metadata --disable-smart-memory
 ```
 
@@ -135,7 +137,7 @@ docker run -d \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
   -e EXTRA_ARGS="--disable-metadata --disable-smart-memory" \
-  comfyui-full:gpu-cu124
+  ihmily/comfyui-full:gpu-cu124
 ```
 
 #### Common Startup Parameters

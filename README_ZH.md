@@ -57,6 +57,8 @@ docker pull ihmily/comfyui-full:gpu-cu124
 
 ## 🚀 运行容器
 
+注意，以下运行命令均使用的是从远程拉取的镜像，如需运行自己本地构建的镜像，需将 `ihmily/comfyui-full:gpu-cu124` 改为 `comfyui-full:gpu-cu124` 。
+
 ### 基础运行命令
 
 ```bash
@@ -65,7 +67,7 @@ docker run -d \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  comfyui-full:gpu-cu124
+  ihmily/comfyui-full:gpu-cu124
 ```
 
 ### 运行配置示例（推荐）
@@ -83,7 +85,7 @@ docker run -d \
   -v "$pwd/user:/app/ComfyUI/user" \
   -v "$pwd/output:/app/ComfyUI/output" \
   -v "$pwd/input:/app/ComfyUI/input" \
-  comfyui-full:gpu-cu124
+  ihmily/comfyui-full:gpu-cu124
 ```
 
 为了能更方便管理自定义节点，可以挂载custom_nodes目录。注意，如果挂载后本地custom_nodes为空，这会导致容器内无任何ComfyUI节点。
@@ -102,7 +104,7 @@ docker run -d \
   -v "$pwd/output:/app/ComfyUI/output" \
   -v "$pwd/input:/app/ComfyUI/input" \
   -v "$pwd/custom_nodes:/app/ComfyUI/custom_nodes" \
-  comfyui-full:gpu-cu124
+  ihmily/comfyui-full:gpu-cu124
 ```
 
 如果是中国国内用户，访问huggingface网络不佳的情况下，可以配置一个huggingface镜像环境变量，运行容器时新增以下参数
@@ -123,7 +125,7 @@ docker run -d \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  comfyui-full:gpu-cu124 \
+  ihmily/comfyui-full:gpu-cu124 \
   python ComfyUI/main.py --listen 0.0.0.0 --port 8188 --disable-metadata --disable-smart-memory
 ```
 
@@ -136,7 +138,7 @@ docker run -d \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
   -e EXTRA_ARGS="--disable-metadata --disable-smart-memory" \
-  comfyui-full:gpu-cu124
+  ihmily/comfyui-full:gpu-cu124
 ```
 
 #### 常用启动参数
