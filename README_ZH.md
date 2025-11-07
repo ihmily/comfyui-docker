@@ -82,10 +82,10 @@ docker run -d \
   -e CUDA_DEVICE=0 \
   -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub" \
   -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub" \
-  -v "$pwd/models:/app/ComfyUI/models" \
-  -v "$pwd/user:/app/ComfyUI/user" \
-  -v "$pwd/output:/app/ComfyUI/output" \
-  -v "$pwd/input:/app/ComfyUI/input" \
+  -v "$PWD/models:/app/ComfyUI/models" \
+  -v "$PWD/user:/app/ComfyUI/user" \
+  -v "$PWD/output:/app/ComfyUI/output" \
+  -v "$PWD/input:/app/ComfyUI/input" \
   ihmily/comfyui-full:gpu-cu124
 ```
 
@@ -101,11 +101,11 @@ docker run -d \
   -e CUDA_DEVICE=0 \
   -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub" \
   -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub" \
-  -v "$pwd/models:/app/ComfyUI/models" \
-  -v "$pwd/user:/app/ComfyUI/user" \
-  -v "$pwd/output:/app/ComfyUI/output" \
-  -v "$pwd/input:/app/ComfyUI/input" \
-  -v "$pwd/custom_nodes:/app/ComfyUI/custom_nodes" \
+  -v "$PWD/models:/app/ComfyUI/models" \
+  -v "$PWD/user:/app/ComfyUI/user" \
+  -v "$PWD/output:/app/ComfyUI/output" \
+  -v "$PWD/input:/app/ComfyUI/input" \
+  -v "$PWD/custom_nodes:/app/ComfyUI/custom_nodes" \
   ihmily/comfyui-full:gpu-cu124
 ```
 
@@ -164,8 +164,8 @@ docker run -d \
 | `/app/ComfyUI/output` | `/path/to/output` | 输出文件目录 |
 | `/app/ComfyUI/input` | `/path/to/input` | 输入文件目录 |
 | `/app/ComfyUI/user` | `/path/to/user` | 用户目录（存储工作流文件) |
-| `/root/.cache/huggingface/hub` | `/$home/.cache/huggingface/hub` | huggingface缓存目录 |
-| `/root/.cache/torch/hub` | `/$home/.cache/torch/hub` | torch缓存目录 |
+| `/root/.cache/huggingface/hub` | `/$HOME/.cache/huggingface/hub` | huggingface缓存目录 |
+| `/root/.cache/torch/hub` | `/$HOME/.cache/torch/hub` | torch缓存目录 |
 
 ## 🔧 环境变量
 
