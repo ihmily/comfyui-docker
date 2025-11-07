@@ -6,7 +6,7 @@
 
 ## 📦 包含的自定义节点
 
-本项目预装了以下自定义节点：
+本项目镜像预装了以下自定义节点：
 
 - ComfyUI-Manager
 - ComfyUI-Light-Tool
@@ -68,37 +68,54 @@ docker run -d \
   comfyui-full:gpu-cu124
 ```
 
-### 挂载模型和自定义节点目录
+### 运行配置示例（推荐）
 
 ```bash
+# 挂载相关目录
 docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  -v "/path/to/your/models:/app/ComfyUI/models" \
-  -v "/path/to/your/custom_nodes:/app/ComfyUI/custom_nodes" \
+  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub"
+  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub"
+  -v "$pwd/models:/app/ComfyUI/models" \
+  -v "$pwd/user:/app/ComfyUI/user" \
+  -v "$pwd/output:/app/ComfyUI/output" \
+  -v "$pwd/input:/app/ComfyUI/input" \
   comfyui-full:gpu-cu124
 ```
 
-### 完整配置示例
+为了能更方便管理自定义节点，可以挂载custom_nodes目录。注意，如果挂载后本地custom_nodes为空，这会导致容器内无任何ComfyUI节点。
 
 ```bash
+# 挂载相关目录(完整)
 docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  -v "/root/ComfyUI/models:/app/ComfyUI/models" \
-  -v "/root/ComfyUI/custom_nodes:/app/ComfyUI/custom_nodes" \
-  -v "/root/ComfyUI/output:/app/ComfyUI/output" \
-  -v "/root/ComfyUI/input:/app/ComfyUI/input" \
+  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub"
+  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub"
+  -v "$pwd/models:/app/ComfyUI/models" \
+  -v "$pwd/user:/app/ComfyUI/user" \
+  -v "$pwd/output:/app/ComfyUI/output" \
+  -v "$pwd/input:/app/ComfyUI/input" \
+  -v "$pwd/custom_nodes:/app/ComfyUI/custom_nodes" \
   comfyui-full:gpu-cu124
 ```
 
-### 添加启动参数
+如果是中国国内用户，访问huggingface网络不佳的情况下，可以配置一个huggingface镜像环境变量，运行容器时新增以下参数
 
-#### 方法1：直接覆盖启动命令（推荐）
+```bash
+-e HF_ENDPOINT="https://hf-mirror.com"
+```
+
+以上运行配置都可以根据自己的实际需求进行修改。
+
+### 添加ComfyUI启动参数（可选）
+
+#### 方法1：直接覆盖启动命令
 
 ```bash
 docker run -d \
@@ -110,7 +127,7 @@ docker run -d \
   python ComfyUI/main.py --listen 0.0.0.0 --port 8188 --disable-metadata --disable-smart-memory
 ```
 
-#### 方法2：使用环境变量
+#### 方法2：使用环境变量EXTRA_ARGS
 
 ```bash
 docker run -d \
@@ -136,16 +153,20 @@ docker run -d \
 
 ## 📁 目录挂载说明
 
-| 容器路径 | 建议挂载路径 | 说明 |
+| 容器路径 | 挂载路径 | 说明 |
 |---------|-------------|------|
 | `/app/ComfyUI/models` | `/path/to/models` | 模型文件目录 |
 | `/app/ComfyUI/custom_nodes` | `/path/to/custom_nodes` | 自定义节点目录 |
 | `/app/ComfyUI/output` | `/path/to/output` | 输出文件目录 |
 | `/app/ComfyUI/input` | `/path/to/input` | 输入文件目录 |
+| `/app/ComfyUI/user` | `/path/to/user` | 用户目录（存储工作流文件) |
+| `/root/.cache/huggingface/hub` | `/$home/.cache/huggingface/hub` | huggingface缓存目录 |
+| `/root/.cache/torch/hub` | `/$home/.cache/torch/hub` | torch缓存目录 |
 
 ## 🔧 环境变量
 
 - `CUDA_DEVICE`: 指定使用的 CUDA 设备 ID（默认为 0）
+- `HF_ENDPOINT`: Huggingface中国镜像服务
 
 ## 🌐 访问 ComfyUI
 

@@ -67,37 +67,54 @@ docker run -d \
   comfyui-full:gpu-cu124
 ```
 
-### Mount Models and Custom Nodes Directories
+### Recommended Run Configuration
 
 ```bash
+# Mount related directories
 docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  -v "/path/to/your/models:/app/ComfyUI/models" \
-  -v "/path/to/your/custom_nodes:/app/ComfyUI/custom_nodes" \
+  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub"
+  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub"
+  -v "$pwd/models:/app/ComfyUI/models" \
+  -v "$pwd/user:/app/ComfyUI/user" \
+  -v "$pwd/output:/app/ComfyUI/output" \
+  -v "$pwd/input:/app/ComfyUI/input" \
   comfyui-full:gpu-cu124
 ```
 
-### Complete Configuration Example
+To more conveniently manage custom nodes, you can mount the custom_nodes directory. Note that if the local custom_nodes directory is empty after mounting, there will be no ComfyUI nodes in the container.
 
 ```bash
+# Mount related directories (complete)
 docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  -v "/root/ComfyUI/models:/app/ComfyUI/models" \
-  -v "/root/ComfyUI/custom_nodes:/app/ComfyUI/custom_nodes" \
-  -v "/root/ComfyUI/output:/app/ComfyUI/output" \
-  -v "/root/ComfyUI/input:/app/ComfyUI/input" \
+  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub"
+  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub"
+  -v "$pwd/models:/app/ComfyUI/models" \
+  -v "$pwd/user:/app/ComfyUI/user" \
+  -v "$pwd/output:/app/ComfyUI/output" \
+  -v "$pwd/input:/app/ComfyUI/input" \
+  -v "$pwd/custom_nodes:/app/ComfyUI/custom_nodes" \
   comfyui-full:gpu-cu124
 ```
 
-### Adding Startup Parameters
+For users in China who have poor network access to HuggingFace, you can configure a HuggingFace mirror environment variable by adding the following parameter when running the container:
 
-#### Method 1: Direct Command Override (Recommended)
+```bash
+-e HF_ENDPOINT="https://hf-mirror.com"
+```
+
+All the above run configurations can be modified according to your actual needs.
+
+### Adding ComfyUI Startup Parameters (Optional)
+
+#### Method 1: Direct Command Override
 
 ```bash
 docker run -d \
@@ -141,10 +158,14 @@ docker run -d \
 | `/app/ComfyUI/custom_nodes` | `/path/to/custom_nodes` | Custom nodes directory |
 | `/app/ComfyUI/output` | `/path/to/output` | Output files directory |
 | `/app/ComfyUI/input` | `/path/to/input` | Input files directory |
+| `/app/ComfyUI/user` | `/path/to/user` | User directory (stores workflow files) |
+| `/root/.cache/huggingface/hub` | `/$home/.cache/huggingface/hub` | HuggingFace cache directory |
+| `/root/.cache/torch/hub` | `/$home/.cache/torch/hub` | Torch cache directory |
 
 ## 🔧 Environment Variables
 
 - `CUDA_DEVICE`: Specify the CUDA device ID to use (default: 0)
+- `HF_ENDPOINT`: HuggingFace mirror service for Chinese users
 
 ## 🌐 Accessing ComfyUI
 
@@ -172,7 +193,7 @@ Execute commands `nvidia-smi` and `nvcc --version` to ensure the host has driver
 
 Expected output:
 ```
-root@ihmily:~#nvidia-smi                                                                                                                                         
+root@ihmily:~#nvidia-smi                                                                         
 +-----------------------------------------------------------------------------------------+                                                                             
 | NVIDIA-SMI 580.95.05              Driver Version: 580.95.05      CUDA Version: 13.0     |                                                                             
 +-----------------------------------------+------------------------+----------------------+
