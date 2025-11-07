@@ -18,6 +18,15 @@ RUN apt-get update && \
         ca-certificates \
         ninja-build \
         vim \
+        curl \
+        iputils-ping \
+        dnsutils \
+        procps \
+        htop \
+        lsof \
+        net-tools \
+        tree \
+        unzip \
     && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
