@@ -72,15 +72,16 @@ docker run -d \
 
 ### 运行配置示例（推荐）
 
+##### 挂载相关目录
+
 ```bash
-# 挂载相关目录
 docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub"
-  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub"
+  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub" \
+  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub" \
   -v "$pwd/models:/app/ComfyUI/models" \
   -v "$pwd/user:/app/ComfyUI/user" \
   -v "$pwd/output:/app/ComfyUI/output" \
@@ -90,15 +91,16 @@ docker run -d \
 
 为了能更方便管理自定义节点，可以挂载custom_nodes目录。注意，如果挂载后本地custom_nodes为空，这会导致容器内无任何ComfyUI节点。
 
+##### 挂载相关目录(完整)
+
 ```bash
-# 挂载相关目录(完整)
 docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub"
-  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub"
+  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub" \
+  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub" \
   -v "$pwd/models:/app/ComfyUI/models" \
   -v "$pwd/user:/app/ComfyUI/user" \
   -v "$pwd/output:/app/ComfyUI/output" \

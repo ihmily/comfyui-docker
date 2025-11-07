@@ -71,15 +71,16 @@ docker run -d \
 
 ### Recommended Run Configuration
 
+##### Mount related directories
+
 ```bash
-# Mount related directories
 docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub"
-  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub"
+  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub" \
+  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub" \
   -v "$pwd/models:/app/ComfyUI/models" \
   -v "$pwd/user:/app/ComfyUI/user" \
   -v "$pwd/output:/app/ComfyUI/output" \
@@ -89,15 +90,16 @@ docker run -d \
 
 To more conveniently manage custom nodes, you can mount the custom_nodes directory. Note that if the local custom_nodes directory is empty after mounting, there will be no ComfyUI nodes in the container.
 
+##### Mount related directories (complete)
+
 ```bash
-# Mount related directories (complete)
 docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
   -e CUDA_DEVICE=0 \
-  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub"
-  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub"
+  -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub" \
+  -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub" \
   -v "$pwd/models:/app/ComfyUI/models" \
   -v "$pwd/user:/app/ComfyUI/user" \
   -v "$pwd/output:/app/ComfyUI/output" \
