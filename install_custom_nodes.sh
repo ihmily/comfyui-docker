@@ -51,6 +51,8 @@ REPOS=(
     "https://github.com/Lightricks/ComfyUI-LTXVideo"
     "https://github.com/TTPlanetPig/Comfyui_TTP_Toolset"
     "https://github.com/nunchaku-tech/ComfyUI-nunchaku"
+    "https://github.com/ltdrdata/ComfyUI-Impact-Subpack"
+    "https://github.com/M1kep/ComfyLiterals"
 )
 
 cd /app/ComfyUI/custom_nodes || exit 1
