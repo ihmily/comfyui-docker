@@ -17,7 +17,6 @@ REPOS=(
     "https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git"
     "https://github.com/evanspearman/ComfyMath.git"
     "https://github.com/nullquant/ComfyUI-BrushNet.git"
-    "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git"
     "https://github.com/Fannovel16/comfyui_controlnet_aux.git"
     "https://github.com/chrisgoringe/cg-use-everywhere.git"
     "https://github.com/kijai/ComfyUI-Florence2.git"
@@ -48,11 +47,12 @@ REPOS=(
     "https://github.com/ssitu/ComfyUI_UltimateSDUpscale"
     "https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved"
     "https://github.com/PowerHouseMan/ComfyUI-AdvancedLivePortrait"
-    "https://github.com/Lightricks/ComfyUI-LTXVideo"
     "https://github.com/TTPlanetPig/Comfyui_TTP_Toolset"
     "https://github.com/nunchaku-tech/ComfyUI-nunchaku"
     "https://github.com/ltdrdata/ComfyUI-Impact-Subpack"
     "https://github.com/M1kep/ComfyLiterals"
+    "https://github.com/WSJUSA/Comfyui-StableSR.git"
+    "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git"
 )
 
 cd /app/ComfyUI/custom_nodes || exit 1
@@ -109,4 +109,13 @@ for dep in "${UPGRADE_DEPS[@]}"; do
         echo "❌ Failed to upgrade: $dep"
     fi
 done
+
+# === Special handling for SAM2 ===
+echo "🚀 Installing SAM2 with --no-build-isolation for speed..."
+if pip install --no-cache-dir --no-build-isolation "git+https://github.com/facebookresearch/sam2"; then
+    echo "✅ SAM2 installed successfully!"
+else
+    echo "❌ Failed to install SAM2"
+fi
+
 echo "🎉 All custom nodes installation completed!"
