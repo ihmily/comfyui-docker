@@ -48,14 +48,12 @@ REPOS=(
     "https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved.git"
     "https://github.com/PowerHouseMan/ComfyUI-AdvancedLivePortrait.git"
     "https://github.com/TTPlanetPig/Comfyui_TTP_Toolset.git"
-    "https://github.com/nunchaku-tech/ComfyUI-nunchaku.git"
     "https://github.com/ltdrdata/ComfyUI-Impact-Subpack.git"
     "https://github.com/M1kep/ComfyLiterals.git"
     "https://github.com/Jasper1566/ComfyUI-StableSR.git"
     "https://github.com/kijai/ComfyUI-WanVideoWrapper.git"
     "https://github.com/kijai/ComfyUI-HunyuanVideoWrapper.git"
     "https://github.com/theUpsider/ComfyUI-Logic.git"
-    "https://github.com/TemryL/ComfyUI-IDM-VTON.git"
     "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git"
 )
 
