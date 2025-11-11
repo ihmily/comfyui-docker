@@ -52,6 +52,10 @@ REPOS=(
     "https://github.com/ltdrdata/ComfyUI-Impact-Subpack"
     "https://github.com/M1kep/ComfyLiterals"
     "https://github.com/WSJUSA/Comfyui-StableSR.git"
+    "https://github.com/kijai/ComfyUI-WanVideoWrapper"
+    "https://github.com/kijai/ComfyUI-HunyuanVideoWrapper"
+    "https://github.com/theUpsider/ComfyUI-Logic"
+    "https://github.com/TemryL/ComfyUI-IDM-VTON"
     "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git"
 )
 
