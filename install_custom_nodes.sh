@@ -120,4 +120,17 @@ else
     echo "❌ Failed to install SAM2"
 fi
 
+# === Install spaCy and its universal sentence model ===
+echo "🌍 Installing spaCy and downloading xx_sent_ud_sm model..."
+if pip install --no-cache-dir spacy; then
+    echo "✅ spaCy installed successfully!"
+    if python -m spacy download xx_sent_ud_sm; then
+        echo "✅ spaCy model 'xx_sent_ud_sm' downloaded successfully!"
+    else
+        echo "❌ Failed to download spaCy model 'xx_sent_ud_sm'"
+    fi
+else
+    echo "❌ Failed to install spaCy"
+fi
+
 echo "🎉 All custom nodes installation completed!"
