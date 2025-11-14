@@ -65,7 +65,6 @@ docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
-  -e CUDA_DEVICE=0 \
   ihmily/comfyui-full:gpu-cu124
 ```
 
@@ -78,7 +77,6 @@ docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
-  -e CUDA_DEVICE=0 \
   -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub" \
   -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub" \
   -v "$PWD/models:/app/ComfyUI/models" \
@@ -97,7 +95,6 @@ docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
-  -e CUDA_DEVICE=0 \
   -v "$HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub" \
   -v "$HOME/.cache/torch/hub:/root/.cache/torch/hub" \
   -v "$PWD/models:/app/ComfyUI/models" \
@@ -125,9 +122,8 @@ docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
-  -e CUDA_DEVICE=0 \
   ihmily/comfyui-full:gpu-cu124 \
-  python ComfyUI/main.py --listen 0.0.0.0 --port 8188 --disable-metadata --disable-smart-memory
+  python ComfyUI/main.py --listen 0.0.0.0 --port 8188 --disable-metadata --disable-smart-memory --cuda-device 0
 ```
 
 #### Method 2: Using Environment Variables
@@ -137,13 +133,13 @@ docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
-  -e CUDA_DEVICE=0 \
-  -e EXTRA_ARGS="--disable-metadata --disable-smart-memory" \
+  -e EXTRA_ARGS="--cuda-device 0 --disable-metadata --disable-smart-memory" \
   ihmily/comfyui-full:gpu-cu124
 ```
 
 #### Common Startup Parameters
 
+- `--cuda-device 0`  - Select GPU cuda device, for example that use cuda:0 
 - `--disable-metadata` - Disable metadata
 - `--disable-smart-memory` - Disable smart memory management
 - `--cpu` - Force CPU usage
