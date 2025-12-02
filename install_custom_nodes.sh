@@ -52,6 +52,10 @@ REPOS=(
     "https://github.com/kijai/ComfyUI-WanVideoWrapper.git"
     "https://github.com/kijai/ComfyUI-HunyuanVideoWrapper.git"
     "https://github.com/theUpsider/ComfyUI-Logic.git"
+    "https://github.com/Jonseed/ComfyUI-Detail-Daemon"
+	"https://github.com/sipie800/ComfyUI-PuLID-Flux-Enhanced"
+	"https://github.com/dchatel/comfyui_facetools"
+    "https://github.com/XLabs-AI/x-flux-comfyui"
     "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git"
 )
 
@@ -78,7 +82,7 @@ while IFS= read -r req_file; do
     else
         echo "⚠️  Failed to install: $dir"
     fi
-done < <(find . -maxdepth 3 -name "requirements.txt" -type f)
+done < <(find . -maxdepth 3 -name "requirements.txt" -type f ! -path "./ComfyUI-Impact-Pack/*")
 
 echo "🔧 Installing custom global dependencies..."
 
@@ -86,6 +90,15 @@ CUSTOM_DEPS=(
     "ninja"
     "llama-cpp-python"
     "nunchaku"
+	"segment-anything"
+	"scikit-image"
+	"piexif"
+	"transformers"
+	"opencv-python-headless"
+	"scipy"
+	"numpy"
+	"dill"
+	"matplotlib"
 )
 
 for dep in "${CUSTOM_DEPS[@]}"; do
