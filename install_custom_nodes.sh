@@ -82,7 +82,7 @@ while IFS= read -r req_file; do
     else
         echo "⚠️  Failed to install: $dir"
     fi
-done < <(find . -maxdepth 3 -name "requirements.txt" -type f ! -path "./ComfyUI-Impact-Pack/*")
+done < <(find . -maxdepth 3 -name "requirements.txt" -type f -not -path '*/\.*' ! -path "./ComfyUI-Impact-Pack/*")
 
 echo "🔧 Installing custom global dependencies..."
 
