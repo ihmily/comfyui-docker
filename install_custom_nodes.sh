@@ -41,7 +41,6 @@ REPOS=(
     "https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git"
     "https://github.com/cubiq/PuLID_ComfyUI.git"
     "https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet.git"
-    "https://github.com/welltop-cn/ComfyUI-TeaCache.git"
     "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git"
     "https://github.com/ssitu/ComfyUI_UltimateSDUpscale.git"
     "https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved.git"
