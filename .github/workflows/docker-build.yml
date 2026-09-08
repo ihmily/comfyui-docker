@@ -45,7 +45,7 @@ jobs:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
           type=raw,value=${{ inputs.tag }}
-          type=raw,value=gpu-cu124
+          type=raw,value=gpu-cu130
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5

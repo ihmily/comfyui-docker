@@ -2,7 +2,44 @@
 
 简体中文 / [English](./README.md)
 
-一个预配置的 ComfyUI Docker 镜像，包含 CUDA 12.4 支持和多个流行的自定义节点。
+一个预配置的 ComfyUI Docker 镜像，包含 PyTorch CUDA 13.0 支持和多个流行的自定义节点。
+
+## 必须配置 NVIDIA 容器运行时
+
+在配备 NVIDIA GPU 的 Linux 宿主机上，构建或启动本项目之前必须安装并配置 NVIDIA Container Toolkit。否则 Docker 无法将 GPU 传递给容器，使用 `--gpus all` 的命令会直接报错。
+
+Ubuntu/Debian 请执行：
+
+```bash
+# 安装 nvidia-container-toolkit
+sudo apt-get install -y nvidia-container-toolkit
+
+# 配置 Docker 使用 NVIDIA 运行时
+sudo nvidia-ctk runtime configure --runtime=docker
+
+# 重启 Docker 使配置生效
+sudo systemctl restart docker
+```
+
+执行前需确保宿主机已经安装 Docker 和 NVIDIA 驱动，并已配置 NVIDIA Container Toolkit 软件源。完成此步骤后，再执行下文的 `docker compose` 或 `docker run` 命令。
+
+## 当前 ComfyUI 环境要求
+
+根据 ComfyUI 官方 README：
+
+- PyTorch 2.7 仅为最低限度支持，官方强烈建议使用更新版本；超过 6 个月的 PyTorch 应升级。
+- NVIDIA 20 系及更新显卡要求使用 CUDA 13.0 或更高版本的 PyTorch。
+- Python 3.13 支持良好，但部分自定义节点可能有问题时应使用 Python 3.12。本镜像选择 Python 3.12。
+- 本镜像使用已验证的 `torch==2.13.0` 和 `xformers==0.0.35` 组合；`torchvision` 与 `torchaudio` 由 pip 根据该 Torch 版本解析匹配版本。
+
+默认构建固定到当前稳定版 ComfyUI `v0.34.6`，而不是 `master`。可通过 `COMFYUI_REF` 构建参数升级或测试其他版本。
+
+升级到新的稳定标签时，例如 `v0.35.0`：
+
+```bash
+COMFYUI_REF=v0.35.0 docker compose build --no-cache
+docker compose up -d
+```
 
 ## 📦 包含的自定义节点
 
@@ -41,7 +78,21 @@
 ### 本地构建
 
 ```bash
-docker build -t comfyui-full:gpu-cu124 .
+docker build -t comfyui-full:gpu-cu130 .
+```
+
+推荐直接使用 Compose 构建并启动：
+
+```bash
+docker compose build --no-cache
+docker compose up -d
+docker compose logs -f comfyui
+```
+
+NVIDIA 10 系及更早显卡不能使用 CUDA 13.0。可按官方兼容方案改用 CUDA 12.6 构建：
+
+```bash
+PYTORCH_INDEX_URL=https://download.pytorch.org/whl/cu126 docker compose build --no-cache
 ```
 
 ## 📥 从 Docker Hub 拉取镜像
@@ -49,15 +100,12 @@ docker build -t comfyui-full:gpu-cu124 .
 您也可以直接从 Docker Hub 拉取预构建的镜像，无需本地构建：
 
 ```bash
-docker pull ihmily/comfyui-full:gpu-cu124
+docker pull ihmily/comfyui-full:gpu-cu130
 ```
-
-拉取完成后，可以直接使用 `ihmily/comfyui-full:gpu-cu124` 作为镜像名称运行容器。
-
 
 ## 🚀 运行容器
 
-注意，以下运行命令均使用的是从远程拉取的镜像，如需运行自己本地构建的镜像，需将 `ihmily/comfyui-full:gpu-cu124` 改为 `comfyui-full:gpu-cu124` 。
+以下示例使用本地构建的 `comfyui-full:gpu-cu130` 镜像。
 
 ### 基础运行命令
 
@@ -66,7 +114,7 @@ docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
-  ihmily/comfyui-full:gpu-cu124
+  comfyui-full:gpu-cu130
 ```
 
 ### 运行配置示例（推荐）
@@ -84,7 +132,7 @@ docker run -d \
   -v "$PWD/user:/app/ComfyUI/user" \
   -v "$PWD/output:/app/ComfyUI/output" \
   -v "$PWD/input:/app/ComfyUI/input" \
-  ihmily/comfyui-full:gpu-cu124
+  comfyui-full:gpu-cu130
 ```
 
 为了能更方便管理自定义节点，可以挂载custom_nodes目录。注意，如果挂载后本地custom_nodes为空，这会导致容器内无任何ComfyUI节点。
@@ -103,7 +151,7 @@ docker run -d \
   -v "$PWD/output:/app/ComfyUI/output" \
   -v "$PWD/input:/app/ComfyUI/input" \
   -v "$PWD/custom_nodes:/app/ComfyUI/custom_nodes" \
-  ihmily/comfyui-full:gpu-cu124
+  comfyui-full:gpu-cu130
 ```
 
 如果是中国国内用户，访问huggingface网络不佳的情况下，可以配置一个huggingface镜像环境变量，运行容器时新增以下参数
@@ -123,7 +171,7 @@ docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
-  ihmily/comfyui-full:gpu-cu124 \
+  comfyui-full:gpu-cu130 \
   python ComfyUI/main.py --listen 0.0.0.0 --port 8188 --disable-metadata --disable-smart-memory --cuda-device 0
 ```
 
@@ -135,7 +183,7 @@ docker run -d \
   --gpus all \
   -p 8188:8188 \
   -e EXTRA_ARGS="--cuda-device 0 --disable-metadata --disable-smart-memory" \
-  ihmily/comfyui-full:gpu-cu124
+  comfyui-full:gpu-cu130
 ```
 
 #### 常用启动参数
@@ -165,8 +213,10 @@ docker run -d \
 
 ## 🔧 环境变量
 
-- `CUDA_DEVICE`: 指定使用的 CUDA 设备 ID（默认为 0）
+- `EXTRA_ARGS`: 追加 ComfyUI 启动参数；选择设备请使用 `--cuda-device 0`
 - `HF_ENDPOINT`: Huggingface中国镜像服务
+
+构建参数 `COMFYUI_REF` 用于选择 ComfyUI 稳定标签，`PYTORCH_INDEX_URL` 用于选择 PyTorch CUDA 软件源。
 
 ## 🌐 访问 ComfyUI
 
@@ -180,7 +230,7 @@ http://localhost:8188
 
 - **Docker**: 20.10 或更高版本
 - **NVIDIA Docker**: 支持 GPU 的 Docker 运行时
-- **GPU**: 支持 CUDA 12.4 的 NVIDIA GPU
+- **GPU**: NVIDIA 20 系及更新显卡使用 CUDA 13.0；10 系及更早显卡使用 CUDA 12.6 兼容构建
 - **内存**: 建议至少 8GB RAM
 - **存储**: 建议至少 20GB 可用空间
 
@@ -227,19 +277,7 @@ Build cuda_11.5.r11.5/compiler.30672275_0
 
 上面结果显示 NVIDIA 显卡驱动已正确安装（580.95.05），CUDA 运行时环境可见（CUDA 13.0）。
 
-说明可能是container-toolkit未安装
-
-```bash
-# Ubuntu/Debian
-# 安装 nvidia-container-toolkit
-sudo apt-get install -y nvidia-container-toolkit
-
-# 配置 Docker 使用 NVIDIA 作为运行时
-sudo nvidia-ctk runtime configure --runtime=docker
-
-# 重启 Docker 服务
-sudo systemctl restart docker
-```
+如果驱动工作正常，但 Docker 仍然报告此错误，请先完成 README 前面的[必须配置 NVIDIA 容器运行时](#必须配置-nvidia-容器运行时)步骤。
 
 
 ## 📝 自定义节点管理

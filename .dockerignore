@@ -1,0 +1,10 @@
+.git
+.github
+.gitignore
+custom_nodes
+input
+models
+output
+user
+*.log
+README*.md

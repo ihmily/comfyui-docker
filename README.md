@@ -2,7 +2,44 @@
 
 English / [简体中文](./README_ZH.md)
 
-A pre-configured ComfyUI Docker image with CUDA 12.4 support and multiple popular custom nodes.
+A pre-configured ComfyUI Docker image with PyTorch CUDA 13.0 support and multiple popular custom nodes.
+
+## Required NVIDIA Container Runtime Setup
+
+On a Linux host with an NVIDIA GPU, install and configure NVIDIA Container Toolkit before building or starting this project. Docker cannot pass the GPU into the container without this runtime, and commands that use `--gpus all` will fail.
+
+For Ubuntu/Debian, run:
+
+```bash
+# Install nvidia-container-toolkit
+sudo apt-get install -y nvidia-container-toolkit
+
+# Configure Docker to use the NVIDIA runtime
+sudo nvidia-ctk runtime configure --runtime=docker
+
+# Restart Docker to apply the configuration
+sudo systemctl restart docker
+```
+
+This assumes Docker, the NVIDIA driver, and the NVIDIA Container Toolkit package repository are already available on the host. Complete this step before using either `docker compose` or `docker run` below.
+
+## Current ComfyUI Environment Requirements
+
+According to the upstream ComfyUI README:
+
+- PyTorch 2.7 is only minimally supported; a newer version is strongly recommended. PyTorch installations older than six months should be upgraded.
+- NVIDIA 20-series and newer GPUs require a CUDA 13.0 or newer PyTorch build.
+- Python 3.13 is well supported, with Python 3.12 recommended when custom-node dependencies have issues. This image uses Python 3.12.
+- This image uses the verified `torch==2.13.0` and `xformers==0.0.35` combination. Pip resolves matching `torchvision` and `torchaudio` versions for that Torch release.
+
+The build defaults to the current stable ComfyUI release, `v0.34.6`, instead of `master`. Upstream warns that unreleased `master` commits can break many custom nodes. Override the `COMFYUI_REF` build argument to test another release.
+
+To move to a newer stable tag, for example `v0.35.0`:
+
+```bash
+COMFYUI_REF=v0.35.0 docker compose build --no-cache
+docker compose up -d
+```
 
 ## 📦 Included Custom Nodes
 
@@ -41,7 +78,21 @@ And more...
 ### Local Build
 
 ```bash
-docker build -t comfyui-full:gpu-cu124 .
+docker build -t comfyui-full:gpu-cu130 .
+```
+
+The recommended path is to build and start with Compose:
+
+```bash
+docker compose build --no-cache
+docker compose up -d
+docker compose logs -f comfyui
+```
+
+NVIDIA 10-series and older GPUs cannot use CUDA 13.0. Build with the upstream CUDA 12.6 compatibility option instead:
+
+```bash
+PYTORCH_INDEX_URL=https://download.pytorch.org/whl/cu126 docker compose build --no-cache
 ```
 
 ## 📥 Pull from Docker Hub
@@ -49,14 +100,12 @@ docker build -t comfyui-full:gpu-cu124 .
 You can also pull the pre-built image directly from Docker Hub without local building:
 
 ```bash
-docker pull ihmily/comfyui-full:gpu-cu124
+docker pull ihmily/comfyui-full:gpu-cu130
 ```
-
-After pulling, you can directly use `ihmily/comfyui-full:gpu-cu124` as the image name to run the container.
 
 ## 🚀 Running the Container
 
-Note: All the following run commands use the image pulled from the remote repository. If you need to run your locally built image, change `ihmily/comfyui-full:gpu-cu124` to `comfyui-full:gpu-cu124`.
+The following examples use the locally built `comfyui-full:gpu-cu130` image.
 
 ### Basic Run Command
 
@@ -65,7 +114,7 @@ docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
-  ihmily/comfyui-full:gpu-cu124
+  comfyui-full:gpu-cu130
 ```
 
 ### Recommended Run Configuration
@@ -83,7 +132,7 @@ docker run -d \
   -v "$PWD/user:/app/ComfyUI/user" \
   -v "$PWD/output:/app/ComfyUI/output" \
   -v "$PWD/input:/app/ComfyUI/input" \
-  ihmily/comfyui-full:gpu-cu124
+  comfyui-full:gpu-cu130
 ```
 
 To more conveniently manage custom nodes, you can mount the custom_nodes directory. Note that if the local custom_nodes directory is empty after mounting, there will be no ComfyUI nodes in the container.
@@ -102,7 +151,7 @@ docker run -d \
   -v "$PWD/output:/app/ComfyUI/output" \
   -v "$PWD/input:/app/ComfyUI/input" \
   -v "$PWD/custom_nodes:/app/ComfyUI/custom_nodes" \
-  ihmily/comfyui-full:gpu-cu124
+  comfyui-full:gpu-cu130
 ```
 
 For users in China who have poor network access to HuggingFace, you can configure a HuggingFace mirror environment variable by adding the following parameter when running the container:
@@ -122,7 +171,7 @@ docker run -d \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \
-  ihmily/comfyui-full:gpu-cu124 \
+  comfyui-full:gpu-cu130 \
   python ComfyUI/main.py --listen 0.0.0.0 --port 8188 --disable-metadata --disable-smart-memory --cuda-device 0
 ```
 
@@ -134,7 +183,7 @@ docker run -d \
   --gpus all \
   -p 8188:8188 \
   -e EXTRA_ARGS="--cuda-device 0 --disable-metadata --disable-smart-memory" \
-  ihmily/comfyui-full:gpu-cu124
+  comfyui-full:gpu-cu130
 ```
 
 #### Common Startup Parameters
@@ -164,8 +213,10 @@ docker run -d \
 
 ## 🔧 Environment Variables
 
-- `CUDA_DEVICE`: Specify the CUDA device ID to use (default: 0)
+- `EXTRA_ARGS`: Append ComfyUI startup arguments; select a device with `--cuda-device 0`
 - `HF_ENDPOINT`: HuggingFace mirror service for Chinese users
+
+The `COMFYUI_REF` build argument selects a stable ComfyUI tag, while `PYTORCH_INDEX_URL` selects the PyTorch CUDA package index.
 
 ## 🌐 Accessing ComfyUI
 
@@ -179,7 +230,7 @@ http://localhost:8188
 
 - **Docker**: Version 20.10 or higher
 - **NVIDIA Docker**: Docker runtime with GPU support
-- **GPU**: NVIDIA GPU supporting CUDA 12.4
+- **GPU**: NVIDIA 20-series and newer use CUDA 13.0; 10-series and older use the CUDA 12.6 compatibility build
 - **Memory**: At least 8GB RAM recommended
 - **Storage**: At least 20GB free space recommended
 
@@ -226,19 +277,7 @@ Build cuda_11.5.r11.5/compiler.30672275_0
 
 The above results show that NVIDIA graphics drivers are correctly installed (580.95.05), and the CUDA runtime environment is visible (CUDA 13.0).
 
-This might indicate that container-toolkit is not installed.
-
-```bash
-# Ubuntu/Debian
-# Install nvidia-container-toolkit
-sudo apt-get install -y nvidia-container-toolkit
-
-# Configure Docker to use NVIDIA as runtime
-sudo nvidia-ctk runtime configure --runtime=docker
-
-# Restart Docker service
-sudo systemctl restart docker
-```
+If the driver is working but Docker still reports this error, complete the [required NVIDIA Container Runtime setup](#required-nvidia-container-runtime-setup) near the beginning of this README.
 
 ## 📝 Custom Node Management
 

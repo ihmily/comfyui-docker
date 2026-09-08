@@ -1,14 +1,11 @@
-version: '3.8'
-
 services:
   comfyui:
-    image: ihmily/comfyui-full:gpu-cu124
+    image: comfyui-full:gpu-cu130
     container_name: comfyui
     ports:
       - "8188:8188"
     environment:
-      - CUDA_DEVICE=0
-      - EXTRA_ARGS=--disable-metadata --disable-smart-memory
+      - EXTRA_ARGS=--cuda-device 0 --disable-metadata --disable-smart-memory
     volumes:
       # Mount your local directories to container
       - ./models:/app/ComfyUI/models
